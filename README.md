@@ -3,11 +3,11 @@ Proposed workflow for inclusion of long read data into AllTheBacteria.
 
 ## ONT
 
-All Oxford Nanopore (ONT) reads are first classified into **R9** or **R10** chemistry using the **LongBow classifier**. From there, each chemistry follows it's own path.
+ONT data is uploaded to the public archives, often without information about what chemistry or basecalling was used to create the FASTQs. Therefore, all Oxford Nanopore (ONT) reads are first classified into **R9** or **R10** chemistry using the **LongBow classifier**. From there, each chemistry will follow it's own path.
  
 ### R9 Reads
  
-R9 reads require matched Illumina data to proceed, samples without it are immediately excluded. 
+R9 reads require matched Illumina data to proceed, samples without it are immediately excluded. We are using this requirement as it's impossible for us to know what basecalling algorithm was used on the FASTQ data. By requiring Illumina reads, we can hopefully create the most accurate version of the assembly possible.
 
 For those with matched Illumina, the Illumina assembly must have a **high-quality (HQ = True)** value for their Illumina assembly in AllTheBacteria — failures are excluded. 
 
@@ -24,7 +24,7 @@ This method would require an estimate of genome size using the species detected 
  
 ### R10 Reads
  
-All R10 reads first undergo **HERRO read correction**. After correction, the workflow checks for matched Illumina data:
+All R10 reads first undergo **HERRO read correction**. This should hopefully deal with issues around not knowing basecalling method for the reads. After correction, the workflow checks for matched Illumina data:
  
 - **With matched Illumina:** the same R9 quality checks are applied (HQ = True and Mash distance below threshold). Samples passing both checks are assembled with **hybracter in hybrid mode**. Samples failing either check are assembled with **hybracter in long-read mode**, without Medaka polishing.
 - **Without matched Illumina:** samples go directly to **hybracter in long-read mode**, without Medaka polishing.
